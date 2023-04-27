@@ -19,6 +19,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,11 +29,16 @@ public class MemberDAOImple implements MemberDAO {
 	
 
 	private SqlSessionTemplate sqlMap;
-
+	private PasswordEncoder passwordEncoder;
 	
 	public MemberDAOImple(SqlSessionTemplate sqlMap) {
 		super();
 		this.sqlMap = sqlMap;
+	}
+
+	public MemberDAOImple(PasswordEncoder passwordEncoder) {
+		super();
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	public MemberDAOImple() {
@@ -54,19 +61,37 @@ public class MemberDAOImple implements MemberDAO {
 
 	@Override
 	public int login(String input_id, String input_pwd) {
+		
 		MemberDTO dto = sqlMap.selectOne("login", input_id);
+		
 		int result = 0;
 
+			
 		if (dto == null) {
 			result = NOT_ID;
+			
 		} else {
-			if (dto.getUser_pwd().equals(input_pwd)) {
-				result = LOGIN_OK;
+			System.out.print("비번:"+input_pwd);
+			System.out.print("비번은:"+dto.getUser_pwd());
+			
+	        if (dto.getUser_pwd().startsWith("$2a$10$")) {
+	        	
+				if(new BCryptPasswordEncoder().matches(input_pwd, dto.getUser_pwd())) {
+					result = LOGIN_OK;
+				}else {
+					result = NOT_PWD;
+				}
+				
 			} else {
-				result = NOT_PWD;
+				if(dto.getUser_pwd().equals(input_pwd)) {
+					result = LOGIN_OK;
+				}else {
+					result = NOT_PWD;
+				}
 			}
 		}
 
+		
 		return result;
 	}
 
