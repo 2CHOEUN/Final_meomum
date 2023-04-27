@@ -272,7 +272,7 @@
 							    </table>
 							    <nav aria-label="Page navigation example">
 									<ul class="pagination pagination-sm justify-content-center" style="margin-top:10px;">
-										${pageStr}
+										<li>${pageStr}</li>
 										
 									</ul>
 								</nav>

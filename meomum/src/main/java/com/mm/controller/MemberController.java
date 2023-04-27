@@ -11,6 +11,8 @@ import javax.servlet.http.HttpSession;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,6 +37,7 @@ public class MemberController {
 	private CartDAO cdao;
 	@Autowired
 	private PointDAO pDao;
+
 	
 	/*회원가입 페이지 이동*/
 	@RequestMapping(value="/memberJoin.do",method = RequestMethod.GET)
@@ -46,8 +49,10 @@ public class MemberController {
 	@RequestMapping(value = "/memberJoin.do",method = RequestMethod.POST)
 	public ModelAndView memberJoinSubmit(MemberDTO dto) {
 
+			String encodedPassword = new BCryptPasswordEncoder().encode(dto.getUser_pwd());
+			dto.setUser_pwd(encodedPassword);
+
 		int result = mdao.insertJoin(dto);
-		
 		ModelAndView mav = new ModelAndView();
 		String msg = result>0?"회원가입이 완료되었습니다.":"회원가입에 실패하였습니다.문의1234-1234";
 		mav.addObject("link", "index.do");
@@ -72,6 +77,8 @@ public class MemberController {
 									HttpServletResponse res,
 									@RequestParam(value="saveid",required = false)String saveid) {
 		ModelAndView mav = new ModelAndView();
+		
+		
 		int result = mdao.login(input_id, input_pwd);
 		if(result==mdao.LOGIN_OK) {
 			if(saveid==null) {
