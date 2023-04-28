@@ -146,7 +146,9 @@ public class MemberController {
 
 		return mav;
 	}
+	
 	/*회원 정보 수정 가능한 폼 페이지로 이동*/
+	/*
 	@RequestMapping(value="/infoEdit.do",method = RequestMethod.POST)
 	public ModelAndView infoEditFormOK(HttpSession session,
 									@RequestParam(value = "user_ok",defaultValue = "NO")String user_ok) {
@@ -175,7 +177,7 @@ public class MemberController {
 			
 		
 		return mav;
-	}
+	}*/
 	
 	/**카카오 로그인*/
 	@RequestMapping(value = "/kakao_login.do",method = RequestMethod.GET)
@@ -234,8 +236,9 @@ public class MemberController {
 	@ResponseBody
 	public ModelAndView pwdChange(@RequestParam("user_idx")int user_idx,@RequestParam("newPassword")String newPwd ) {
 
-	
-	    int result = mdao.updatePWD(newPwd, user_idx);
+		String enPwd = new BCryptPasswordEncoder().encode(newPwd);
+		
+	    int result = mdao.updatePWD(enPwd, user_idx);
 
 	    
 		ModelAndView mav = new ModelAndView();
@@ -468,19 +471,67 @@ public class MemberController {
 		mav.setViewName("mmJson");
 		
 		if(newPwd.equals("")||newPwd==null) {
-			mav.addObject("msg", "임시 비밀번호가 발급되었습니다.");
+			mav.addObject("msg", "임시 비밀번호 발급에 실패하였습니다.");
 			
 		}else {
-			int result = mdao.updatePWD(newPwd, user_idx);
+			String enPwd = new BCryptPasswordEncoder().encode(newPwd);
+	
+			int result = mdao.updatePWD(enPwd, user_idx);
 			if(result>0) {
 				mav.addObject("msg", "임시 비밀번호가 전송되었습니다.");
+			
 			}else {
 				mav.addObject("msg", "임시 비밀번호 발급에 실패하였습니다.");
 			}
 		}
 		return mav;
 	}
+	
+	@RequestMapping(value="/infoEdit.do",method = RequestMethod.POST)
+	public ModelAndView infoEditPwdOk(@RequestParam("input_pwd")String input_pwd, HttpSession session) {
+		ModelAndView mav = new ModelAndView();
+		
+		MemberDTO ssInfo = (MemberDTO) session.getAttribute("ssInfo");
+		
+		if(ssInfo==null) {
+			mav.addObject("msg", "로그인을 해주세요.");
+			mav.addObject("gopage","location.href='index.do';");
+			mav.setViewName("mainMsg");
+			return mav;
+		}
+		
+	        int user_idx = ssInfo.getUser_idx();
+			MemberDTO userInfo = mdao.getuserInfo(user_idx);
+						
+				
+		
+        if (ssInfo.getUser_pwd().startsWith("$2a$10$")) {
+			if(new BCryptPasswordEncoder().matches(input_pwd, ssInfo.getUser_pwd())) {
+				
+				mav.addObject("info",userInfo);
+				mav.setViewName("/member/infoEdit");
+				
+			}else {
+				mav.addObject("msg", "비밀번호가 일치하지 않습니다.");
+				mav.addObject("gopage","location.href='infoEdit.do';");
+				mav.setViewName("mainMsg");
+			}
+			
+		}else {
+			if(input_pwd.equals(ssInfo.getUser_pwd())) {
+				mav.addObject("info",userInfo);
+				mav.setViewName("/member/infoEdit");
 
+			}else {
+				mav.addObject("msg", "비밀번호가 일치하지 않습니다.");
+				mav.addObject("gopage","location.href='infoEdit.do';");
+				mav.setViewName("mainMsg");
+			}
+		}
+	
+		return mav;
+		
+	}
 
 	
 }

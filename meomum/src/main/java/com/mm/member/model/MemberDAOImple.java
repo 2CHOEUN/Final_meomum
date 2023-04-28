@@ -45,6 +45,8 @@ public class MemberDAOImple implements MemberDAO {
 		// TODO Auto-generated constructor stub
 	}
 
+	
+	/**회원가입*/
 	@Override
 	public int insertJoin(MemberDTO dto) {
 		
@@ -58,7 +60,7 @@ public class MemberDAOImple implements MemberDAO {
 		return count;
 		
 	}
-
+	/**로그인*/
 	@Override
 	public int login(String input_id, String input_pwd) {
 		
@@ -71,8 +73,6 @@ public class MemberDAOImple implements MemberDAO {
 			result = NOT_ID;
 			
 		} else {
-			System.out.print("비번:"+input_pwd);
-			System.out.print("비번은:"+dto.getUser_pwd());
 			
 	        if (dto.getUser_pwd().startsWith("$2a$10$")) {
 	        	

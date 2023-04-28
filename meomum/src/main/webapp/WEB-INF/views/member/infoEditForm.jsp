@@ -77,46 +77,30 @@
 				            <div class="card-header ">
 				                <label for="input_pwd" class="form-label">비밀번호 확인</label>
 				            </div>
-				            <div class="card-body">
-				            비밀번호를 확인 후 정보 수정이 가능합니다.
-
-				                <form class="form-inline justify-content-center" method="POST" action="infoEdit.do" id="myForm"
+				                <form class="form-inline justify-content-center" method="POST" action="infoEdit.do" 
 				                onkeypress="return event.keyCode != 13;">
-				                    <div class="d-flex align-items-center my-3">
-				                        <input type="password" class="form-control me-2" 
-				                        id="input_pwd" name="input_pwd" placeholder="비밀번호를 입력하세요" required="required">
-				                            <input type="hidden" id="user_ok" name="user_ok" value="OK" >
-				                    </div>
+						            <div class="card-body">
+						            비밀번호를 확인 후 정보 수정이 가능합니다.
+		
+						                    <div class="d-flex align-items-center my-3">
+						                        <input type="password" class="form-control me-2" 
+						                        id="input_pwd" name="input_pwd" placeholder="비밀번호를 입력하세요" required="required">
+						                            <input type="hidden" id="user_ok" name="user_ok" value="OK" >
+						                    </div>
+						            </div>
+						            <div class="card-footer">
+						            <div class="d-grid gap-2">
+						                <button type="submit" class="btn btn-primary">확인</button>
+						                </div>
+						            </div>
 				                </form>
-				            </div>
-				            <div class="card-footer">
-				            <div class="d-grid gap-2">
-				                <button type="button" class="btn btn-primary" onclick="pwdCheck()">확인</button>
-				                </div>
-				            </div>
 				        </div>
 				    </div>
 				</div>
 			</div>
 		</div>
 		<%@include file="/WEB-INF/views/footer.jsp"%>
-	
-<script type="text/javascript">
-function pwdCheck(){
-	var input_pwd = encodeURIComponent(document.getElementById('input_pwd').value);
 
-	var user_pwd =  '${sessionScope.ssInfo.user_pwd}';
-
-	
-	if(input_pwd === user_pwd){   
-		   document.getElementById('myForm').submit(); // 폼을 전송합니다.
-		}else{
-		   alert('비밀번호가 일치하지 않습니다.');
-		}
-	
-}
-
-</script>
 </body>
 
 </html>
