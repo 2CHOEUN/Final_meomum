@@ -243,6 +243,8 @@ public class MemberDAOImple implements MemberDAO {
 	@Override
 	public int updatePWD(String newPwd, int user_idx) {
 		Map map = new HashMap();
+		
+		
 		map.put("user_idx", user_idx);
 		map.put("newPwd", newPwd);
 

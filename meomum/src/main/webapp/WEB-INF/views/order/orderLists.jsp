@@ -397,7 +397,7 @@ input:invalid {
 
 	<script>
 			var IMP = window.IMP;
-			IMP.init("imp77686458");
+			IMP.init("imp06153073");
 
 			
             function validateForm() {
@@ -410,7 +410,8 @@ input:invalid {
                   }
                   return true;
             }
-            
+        	
+
 			
 			function requestPay() {
                 if (!validateForm()) {
@@ -458,13 +459,25 @@ input:invalid {
 				//계약자및 사용자 정보 끝//
 
 				var uidx = ${sessionScope.ssInfo.user_idx};//유저번호
-	
 
+				var lists = 0;
+				
+				<c:forEach var="dto" items="${lists}">
+			    	lists ++;
+				</c:forEach>
+			
+				var prooname = '${lists[0].pro_name}';
+
+				if (lists> 1) {
+				  var othernames = '외 ' + (lists-1) + '개';
+				  prooname = prooname + ' ' + othernames;
+				}
+				
 				IMP.request_pay({
-					pg : "kakaopay", //"html5_inicis",
+					pg : "html5_inicis", //"html5_inicis",
 					pay_method : 'card',
 					merchant_uid : uid,
-					name : oName,
+					name: prooname,
 					amount : tp,
 					buyer_name : bName,
 					buyer_tel : bTel,

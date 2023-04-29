@@ -381,7 +381,7 @@ input:invalid {
 
 	<script>
 		var IMP = window.IMP;
-		IMP.init("imp77686458");
+		IMP.init("imp06153073");
 
 		function validateForm() {
 			var form = document.ordersForm;
@@ -446,10 +446,10 @@ input:invalid {
 			var pAmount =${param.cart_amount} ;//상품수량
 
 			IMP.request_pay({
-				pg : "kakaopay", //"html5_inicis",
+				pg : "html5_inicis", //"html5_inicis",
 				pay_method : 'card',
 				merchant_uid : uid,
-				name : oName,
+				name : '${dto.pro_name}',
 				amount : tp,
 				buyer_name : bName,
 				buyer_tel : bTel,
