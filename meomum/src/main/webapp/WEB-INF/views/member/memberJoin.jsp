@@ -102,17 +102,21 @@ input:invalid {
 						<label for="user_tel">연락처</label> <input type="tel"
 							class="form-control" id="user_tel" name="user_tel"
 							pattern="[0-9]{3}-[0-9]{3,4}-[0-9]{4}"
-							placeholder="휴대폰 번호 (ex. 010-1234-5678)" required="required">
+							placeholder="휴대폰 번호 (ex. 010-1234-5678)" required="required" oninput="formatPhoneNumber(this);">
 
 					</div>
 					<div class="form-group my-3">
-						<label for="user_tel">필수약관동의</label> <br>
-						<input type="checkbox" name="allcheck" onclick="allCheck()">전체 동의<br> 
-							<input
-							type="checkbox" name="tos" id="tos" value="Y" required="required">(필수)이용약관 <a
-							href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">[내용보기]</a><br>
-						<input type="checkbox" name="user_pia" id="user_pia" value="Y" required="required">(필수)개인정보처리방침<a
-							href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">[내용보기]</a>
+						<label for="user_tel">필수약관동의</label><label for="allcheck">(전체 동의)</label>
+							<input type="checkbox" name="allcheck" id="allcheck" onclick="allCheck()">
+				
+						<div>
+							<label for="tos"><input type="checkbox" name="tos" id="tos" value="Y" required="required"> (필수)이용약관 <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">[내용보기]</a></label>
+						</div>
+						<label>
+						  <input type="checkbox" name="user_pia" id="user_pia" value="Y" required="required">
+						  (필수)개인정보처리방침
+						  <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">[내용보기]</a>
+						</label>
 					</div>
 					<div class="text-center my-5 d-grid gap-2 ">
 						<button type="submit" class="btn btn-primary btn-lg">회원가입</button>
@@ -167,8 +171,23 @@ input:invalid {
     	    autoClose: true // 팝업 자동 닫힘
     	}).open();
     }
-</script>
 
+  function formatPhoneNumber(input) {
+    // 입력된 문자열에서 숫자 이외의 문자 제거
+    let phoneNumber = input.value.replace(/[^0-9]/g, '');
+
+    // 길이에 따라 하이픈 추가
+    if (phoneNumber.length < 4) {
+      input.value = phoneNumber;
+    } else if (phoneNumber.length < 7) {
+      input.value = phoneNumber.slice(0, 3) + '-' + phoneNumber.slice(3);
+    } else if (phoneNumber.length < 11) {
+      input.value = phoneNumber.slice(0, 3) + '-' + phoneNumber.slice(3, 6) + '-' + phoneNumber.slice(6);
+    } else {
+      input.value = phoneNumber.slice(0, 3) + '-' + phoneNumber.slice(3, 7) + '-' + phoneNumber.slice(7, 11);
+    }
+  }
+</script>
 <script>
 
 window.onload = function() {
@@ -219,9 +238,13 @@ function ccPassword() {
 	  }
 	}
 function checkPasswordMatch() {
-	  var input_id = document.getElementById("user_id").value;
-	  var password = document.getElementById("user_pwd").value;
-	  var confirmPassword = document.getElementById("user_pwd_confirm").value;
+		var input_id = document.getElementById("user_id").value;
+		var password = document.getElementById("user_pwd").value;
+		var confirmPassword = document.getElementById("user_pwd_confirm").value;
+		var user_pcode = document.getElementById("user_pcode").value;
+		var allCheck = document.getElementById("allcheck").checked;
+		var tos = document.getElementById("tos").checked;
+		var user_pia = document.getElementById("user_pia").checked;
 
 	  if (password != confirmPassword) {
 	    alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
@@ -233,6 +256,21 @@ function checkPasswordMatch() {
 	    alert('이메일 인증이 완료되지 않았습니다.');
 	    return false;
 	  }
+	  if (!allCheck) {
+	        alert('필수약관에 동의해주세요.');
+	        return false;
+	    } else {
+	        if (!tos || !user_pia) {
+	            alert('필수약관에 동의해주세요.');
+	            return false;
+	        }
+	    }
+
+	    // 우편번호 체크
+	    if (user_pcode === '') {
+	        alert('주소를 입력해주세요.');
+	        return false;
+	    }
 
 	  document.getElementById("memberJoin").submit();
 	  return false;
