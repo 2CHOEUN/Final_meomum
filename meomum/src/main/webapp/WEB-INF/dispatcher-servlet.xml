@@ -41,8 +41,8 @@
 	<bean id="mailSender"	class="org.springframework.mail.javamail.JavaMailSenderImpl">
 		<property name="host" value="smtp.gmail.com" />
 		<property name="port" value="587" /><!-- 465 or 25 -->
-		<property name="username" value="wldnssj@gmail.com" />
-		<property name="password" value="enwkvqlimdxmzigw" />
+		<property name="username" value="meomum8282@gmail.com" />
+		<property name="password" value="aljdoimuteyamlgg" />
 		<property name="defaultEncoding" value="utf-8" />
 		<property name="javaMailProperties">
 			<props>
